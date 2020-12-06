@@ -1,0 +1,14 @@
+{
+	"version": 3,
+	"file": "index.css",
+	"sources": [
+		"../../scss/partials/index.scss",
+		"../../scss/partials/_media_query.scss"
+	],
+	"sourcesContent": [
+		"@import \"_media_query.scss\";",
+		""
+	],
+	"names": [],
+	"mappings": ""
+}
