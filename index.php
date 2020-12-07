@@ -1,3 +1,12 @@
+<?php
+
+
+
+?>
+ 
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,10 +14,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>candles</title>
     <link rel="stylesheet" href="css/styles.css">
+    
 </head>
 <body>
 
-<h4 id="grid" class="headline-secondary">Grid System</h4>
+<h4 id="grid" class="headline-secondary">Bec's Candles</h4>
+
+<a href="register.php">Create Account</a>
+
+<a href="logon.php">Logon</a>
 
   <div class="row">
     <div class="col-12 theme">.col-12</div>
@@ -40,6 +54,9 @@
     <div class="col-7 theme centered">.centered .col-7</div>
   </div>
 
+
+<script>
+</script>
     
 </body>
 </html>

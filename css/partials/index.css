@@ -1,2 +1,106 @@
+/* ============================================= */
+/*              Media Queries                    */
+/* ============================================= */
+@media (min-width: 768px) {
+  /* line 10, ../../../Documents/paulRobbPortfolio/candles/scss/partials/_media_query.scss */
+  .container {
+    max-width: 1400px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  /* line 15, ../../../Documents/paulRobbPortfolio/candles/scss/partials/_media_query.scss */
+  .centered {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  /* line 19, ../../../Documents/paulRobbPortfolio/candles/scss/partials/_media_query.scss */
+  .row {
+    flex-direction: row;
+  }
+  /* line 23, ../../../Documents/paulRobbPortfolio/candles/scss/partials/_media_query.scss */
+  [class^=col] {
+    display: flex;
+    justify-content: center;
+    margin-top: 0;
+    align-items: center;
+  }
+  /* line 30, ../../../Documents/paulRobbPortfolio/candles/scss/partials/_media_query.scss */
+  [class^=col] + [class^=col] {
+    margin-left: 10px;
+  }
+  /* line 34, ../../../Documents/paulRobbPortfolio/candles/scss/partials/_media_query.scss */
+  .col-1 {
+    flex-basis: 8.33%;
+  }
+  /* line 38, ../../../Documents/paulRobbPortfolio/candles/scss/partials/_media_query.scss */
+  .col-2 {
+    flex-basis: 16.67%;
+  }
+  /* line 42, ../../../Documents/paulRobbPortfolio/candles/scss/partials/_media_query.scss */
+  .col-3 {
+    flex-basis: 25.00%;
+  }
+  /* line 46, ../../../Documents/paulRobbPortfolio/candles/scss/partials/_media_query.scss */
+  .col-4 {
+    flex-basis: 33.33%;
+  }
+  /* line 50, ../../../Documents/paulRobbPortfolio/candles/scss/partials/_media_query.scss */
+  .col-5 {
+    flex-basis: 41.67%;
+  }
+  /* line 54, ../../../Documents/paulRobbPortfolio/candles/scss/partials/_media_query.scss */
+  .col-6 {
+    flex-basis: 50.00%;
+  }
+  /* line 58, ../../../Documents/paulRobbPortfolio/candles/scss/partials/_media_query.scss */
+  .col-7 {
+    flex-basis: 58.33%;
+  }
+  /* line 62, ../../../Documents/paulRobbPortfolio/candles/scss/partials/_media_query.scss */
+  .col-8 {
+    flex-basis: 66.67%;
+  }
+  /* line 66, ../../../Documents/paulRobbPortfolio/candles/scss/partials/_media_query.scss */
+  .col-9 {
+    flex-basis: 75.00%;
+  }
+  /* line 70, ../../../Documents/paulRobbPortfolio/candles/scss/partials/_media_query.scss */
+  .col-10 {
+    flex-basis: 83.33%;
+  }
+  /* line 74, ../../../Documents/paulRobbPortfolio/candles/scss/partials/_media_query.scss */
+  .col-11 {
+    flex-basis: 91.67%;
+  }
+  /* line 78, ../../../Documents/paulRobbPortfolio/candles/scss/partials/_media_query.scss */
+  .col-12 {
+    flex-basis: 100%;
+  }
+  /* line 82, ../../../Documents/paulRobbPortfolio/candles/scss/partials/_media_query.scss */
+  .nav {
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+  }
+  /* line 88, ../../../Documents/paulRobbPortfolio/candles/scss/partials/_media_query.scss */
+  .nav-link {
+    flex-basis: 100px;
+  }
+  /* line 92, ../../../Documents/paulRobbPortfolio/candles/scss/partials/_media_query.scss */
+  .btn {
+    padding: 10px 30px;
+  }
+  /* line 96, ../../../Documents/paulRobbPortfolio/candles/scss/partials/_media_query.scss */
+  .btn + .btn {
+    margin-left: 10px;
+  }
+  /* line 100, ../../../Documents/paulRobbPortfolio/candles/scss/partials/_media_query.scss */
+  .logo {
+    margin-left: initial;
+    margin-right: initial;
+  }
+}
 
 /*# sourceMappingURL=index.css.map */
