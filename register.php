@@ -8,6 +8,7 @@ $get_password = null;
 // If the button for create_user was clicked
 if (isset($_POST['create_user'])) {
   // Get all the input from form and filter it
+  $name= filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
   $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_STRING);
   $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
    
@@ -19,7 +20,7 @@ if (isset($_POST['create_user'])) {
        $error_message = "This email already exists";
   } else {
       // Else call the function to create a new user
-      if(add_new_user($email,$password)){
+      if(add_new_user($name,$email,$password)){
          header("Location: logon.php?new_user=true");  
       } else {
           $error_message = "Sorry, there was an error creating the user";           
@@ -41,6 +42,8 @@ if (isset($_POST['create_user'])) {
 <body>
 <h3>Create Account</h3>
 <form method="post">
+<label for="name"> Name</label>
+  <input id="name" type="text" name="name"><br>
 <label for="email"> Email</label>
   <input id="email" type="email" name="email"><br>
   <label for="password"> Password</label>

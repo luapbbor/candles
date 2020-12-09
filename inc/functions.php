@@ -54,7 +54,7 @@ function get_user_details_id($id) {
       } 
 }
 
-// This function checks the details from an email address entered in a form
+// This function gets a list of all the candle categories
 function get_categories() {
     include('dbconnect.php');      
     $sql = 'SELECT * FROM categories';      
@@ -68,6 +68,97 @@ function get_categories() {
       } 
 }
 
+// This function gets a list of all the candles
+function get_all_candles() {
+  include('dbconnect.php');      
+  $sql = 'SELECT * FROM candles';      
+  try {
+    $results = $db->prepare($sql);
+    $results->execute();
+    return $results->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+    echo $e->getMessage();
+    return false;
+    } 
+}
+
+// This function gets a single candle via the ID in the URL
+function get_single_candle($candle_id) {
+  include('dbconnect.php');      
+  $sql = 'SELECT * FROM candles WHERE candle_id = ?';      
+  try {
+    $results = $db->prepare($sql);
+    $results->bindValue(1,$candle_id,PDO::PARAM_INT);
+    $results->execute();
+    return $results->fetch(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+    echo $e->getMessage();
+    return false;
+    } 
+}
+
+// Gets the last inserted order_id from the orders table
+function return_last_inserted_row(){
+  include('dbconnect.php');
+  $sql = 'SELECT * FROM orders ORDER BY order_id DESC limit 1 ';
+  try {
+    $results = $db->prepare($sql);
+    $results->execute();
+    return $results->fetch(PDO::FETCH_ASSOC);
+  } catch (Exception $e) {
+    echo $e->getMessage();
+    return false;
+  }
+    return true;
+
+}
+
+// This function gets a single order via the ID in the URL
+function get_single_order($order_id) {
+  include('dbconnect.php');      
+  $sql = 'SELECT * FROM orders WHERE order_id = ?';      
+  try {
+    $results = $db->prepare($sql);
+    $results->bindValue(1,$order_id,PDO::PARAM_INT);
+    $results->execute();
+    return $results->fetch(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+    echo $e->getMessage();
+    return false;
+    } 
+}
+
+// This function gets a all orders from the user_id session variable
+function get_all_user_orders($user_id) {
+  include('dbconnect.php');      
+  $sql = 'SELECT * FROM orders WHERE order_user_id = ?';      
+  try {
+    $results = $db->prepare($sql);
+    $results->bindValue(1,$user_id,PDO::PARAM_INT);
+    $results->execute();
+    return $results->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+    echo $e->getMessage();
+    return false;
+    } 
+}
+
+// This function gets the address related for a particular user
+function get_user_address($user_id) {
+  include('dbconnect.php');      
+  $sql = 'SELECT * FROM address WHERE user_id = ?';      
+  try {
+    $results = $db->prepare($sql);
+    $results->bindValue(1,$user_id,PDO::PARAM_INT);
+    $results->execute();
+    return $results->fetch(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+    echo $e->getMessage();
+    return false;
+    } 
+}
+
+
 
 
 // --------------------------------------------------------------------------//
@@ -76,14 +167,15 @@ function get_categories() {
 
 // This function adds a new user into the database table "users"
 // @param $email, $password etc are all obtained from the form input
-function add_new_user($email,$password) {
+function add_new_user($name, $email,$password) {
     include('dbconnect.php');
     $password = password_hash($password, PASSWORD_DEFAULT);
-    $sql = 'INSERT INTO users(email, password) VALUES(?,?)';
+    $sql = 'INSERT INTO users(name, email, password) VALUES(?,?,?)';
     try {
       $results = $db->prepare($sql);
-      $results->bindValue(1,$email,PDO::PARAM_STR);
-      $results->bindValue(2,$password,PDO::PARAM_STR);
+      $results->bindValue(1,$name,PDO::PARAM_STR);
+      $results->bindValue(2,$email,PDO::PARAM_STR);
+      $results->bindValue(3,$password,PDO::PARAM_STR);
       $results->execute();
     } catch (Exception $e) {
       echo $e->getMessage();
@@ -92,17 +184,40 @@ function add_new_user($email,$password) {
       return true;
   }
 
+// This function adds a users address into the address table
+// @params are all obtained from the form input except $user_id which is obtained from $_SESSION
+function add_user_address($user_id, $street_no, $street_name,$city, $state, $postcode) {
+  include('dbconnect.php');
+  $sql = 'INSERT INTO address(user_id,street_no,street_name,city, state, postcode) VALUES(?,?,?,?,?,?)';
+  try {
+    $results = $db->prepare($sql);
+    $results->bindValue(1,$user_id,PDO::PARAM_INT);
+    $results->bindValue(2,$street_no,PDO::PARAM_INT);
+    $results->bindValue(3,$street_name,PDO::PARAM_STR);
+    $results->bindValue(4,$city,PDO::PARAM_STR);
+    $results->bindValue(5,$state,PDO::PARAM_STR);
+    $results->bindValue(6,$postcode,PDO::PARAM_INT);
+    $results->execute();
+  } catch (Exception $e) {
+    echo $e->getMessage();
+    return false;
+  }
+    return true;
+}
+
   // This function adds a new candle into the database table "candles"
 // @param $email, $password etc are all obtained from the form input
-function add_new_candle($title, $description, $price, $selected_category) {
+function add_new_candle($title, $description, $price, $qty, $target_file) {
     include('dbconnect.php');
-    $sql = 'INSERT INTO candles(candle_title, candle_desc, candle_price, candle_category) VALUES(?,?,?,?)';
+    $sql = 'INSERT INTO candles(candle_title, candle_desc, candle_price, candle_qty, candle_image_path) VALUES(?,?,?,?,?)';
     try {
       $results = $db->prepare($sql);
       $results->bindValue(1,$title,PDO::PARAM_STR);
       $results->bindValue(2,$description,PDO::PARAM_STR);
       $results->bindValue(3,$price,PDO::PARAM_INT);
-      $results->bindValue(4,$selected_category,PDO::PARAM_STR);
+      // $results->bindValue(4,$selected_category,PDO::PARAM_STR);
+      $results->bindValue(4,$qty,PDO::PARAM_INT);
+      $results->bindValue(5,$target_file,PDO::PARAM_STR);
       
       $results->execute();
     } catch (Exception $e) {
@@ -111,6 +226,8 @@ function add_new_candle($title, $description, $price, $selected_category) {
     }
       return true;
   }
+
+
 
 // This function adds a new category into the database table "categories"
 // @param $category is obtained from the form input
@@ -127,6 +244,47 @@ function add_new_category($category) {
     }
       return true;
   }
+
+// This function is activated when the user clicks place order
+// It adds the order details into the order table
+// @param $user_id is obtained from the session id
+function add_order($user_id, $total_cost, $date) {
+  include('dbconnect.php');
+  $sql = 'INSERT INTO orders(order_user_id, order_total_cost, order_date) VALUES(?,?,?)';
+  try {
+    $results = $db->prepare($sql);
+    $results->bindValue(1,$user_id,PDO::PARAM_INT);   
+    $results->bindValue(2,$total_cost,PDO::PARAM_INT);   
+    $results->bindValue(3,$date,PDO::PARAM_STR);     
+    $results->execute();
+  } catch (Exception $e) {
+    echo $e->getMessage();
+    return false;
+  }
+    return true;
+}
+
+// This function is activated when the user clicks place order
+// It adds the order details into the order table
+// @param $user_id is obtained from the session id
+function add_candle_order($candle_id, $candle_title, $order_id, $user_id) {
+  include('dbconnect.php');
+  $sql = 'INSERT INTO candles_ordered(candle_id, candle_title, order_id, user_id) VALUES(?,?,?,?)';
+  try {
+    $results = $db->prepare($sql);
+    $results->bindValue(1,$candle_id,PDO::PARAM_INT);   
+    $results->bindValue(2,$candle_title,PDO::PARAM_STR); 
+    $results->bindValue(3,$order_id,PDO::PARAM_INT);   
+    $results->bindValue(4,$user_id,PDO::PARAM_INT);     
+    $results->execute();
+  } catch (Exception $e) {
+    echo $e->getMessage();
+    return false;
+  }
+    return true;
+}
+
+
 
 // --------------------------------------------------------------------------//
 // -------------------------      UPDATES        ---------------------------//
@@ -149,6 +307,26 @@ session_unset();
 
 // destroy the session
 session_destroy();
+}
+
+// This function clears items from the shopping cart
+function clear_cart() {
+  session_start();
+  unset($_SESSION['cart_items']);
+  }
+
+// This function gets the current date and formats it;
+
+function format_current_date() {
+  $current_date = getdate();
+  $current_day = $current_date['mday'];
+  $current_month = $current_date['mon'];
+  $current_year = $current_date['year'];
+  $current_hour = $current_date['hours'];
+  $current_minute = $current_date['minutes'];
+  $date = $current_day . "/" . $current_month . "/" . $current_year . " " . $current_hour . ":" . $current_minute;
+ 
+return $date;
 }
 
 ?>
