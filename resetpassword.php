@@ -38,11 +38,9 @@ include('inc/functions.php');
       header("Location: index.php");
 }
 
-
-
 // If the enter_address button is presssed
 
-if(isset($_POST['update_address'])){
+if(isset($_POST['enter_address'])){
     // Get all the input from form and filter it
   $street_no = filter_input(INPUT_POST, 'street_no', FILTER_SANITIZE_NUMBER_INT);
   $street_name = filter_input(INPUT_POST, 'street_name', FILTER_SANITIZE_STRING);
@@ -50,19 +48,29 @@ if(isset($_POST['update_address'])){
   $state = filter_input(INPUT_POST, 'state', FILTER_SANITIZE_STRING);
   $postcode = filter_input(INPUT_POST, 'postcode', FILTER_SANITIZE_NUMBER_INT);
 
-  
-
-  if(update_user_address($street_no, $street_name,$city,$state,$postcode,$user_id)){
-
-    if ($_SESSION['edit_address_source'] == "profile.php") {
-    header("Location: profile.php?id=" . $user_id);
-    } else {
-        header("Location: checkout.php");
-    }
-  } else {
-      $error_message = "There was an error updating your addrress !";
+  if(add_user_address($user_id, $street_no, $street_name,$city,$state,$postcode)){
+    header("Location: profile.php?id=$user_id");
   }
 
+}
+
+if(isset($_POST['phone_no_button'])){
+    $leading_zero = 0;
+    $phone_no_input = filter_input(INPUT_POST, 'phone_no', FILTER_SANITIZE_NUMBER_INT);
+    $phone_no = $leading_zero . $phone_no_input;
+    if (update_user_phone_no($phone_no,$user_id)){
+        header("Location: profile.php?id=$user_id");
+    } else {
+        $error_message = "Sorry, we could not update your phone number";
+    }
+
+}
+
+if (isset($_POST['reset_password_button'])) {
+    $new_password = filter_input(INPUT_POST, 'reset_confirm_password', FILTER_SANITIZE_STRING);
+    if(reset_password($new_password, $user_id)){
+        header("Location: profile.php?id=$user_id");
+    }
 }
 
 // Pressing the logout button runs the logout function
@@ -87,35 +95,56 @@ if (isset($_POST['logout'])) {
 <?php 
 echo "Hi, " . $show_user_details['name'];
 echo "<br>";
-?>
-<?php echo "Registered email address: " . $show_user_details['email'];
+echo "Registered email address: " . $show_user_details['email'];
 echo "<br>";
+echo "<form method='post'>";
+echo "<label for='reset_password'>New Password</label>";
+echo "<input id='reset_password' type='password' name='reset_password'><br>";
+echo "<label for='reset_confirm_password'>Confirm Password</label>";
+echo "<input id='reset_confirm_password' type='password' name='reset_confirm_password'><br>";
+echo "<input type='submit' id='reset_password_button' name='reset_password_button' value='Reset Password' class='button'>";
+echo "<a href='profile.php?id=$user_id'>Cancel</a>";
+echo "</form>";
+if ($show_user_details['phone_no'] == 0) {
+  echo "<form method='post'>";
+  echo "<label for='phone_no'>Phone No</label>";
+  echo "<input id='phone_no' type='tel' name='phone_no'><br>"; 
+  echo "<input type='submit' id='phone_no_button' name='phone_no_button' value='Add Phone Number' class='button'>";
+  echo "</form>";
+} else {
+  $_SESSION['edit_phone_source'] = "profile.php";
+  echo "Phone: " . "0" . $show_user_details['phone_no'] . "</br>";
+  echo "<a href='editphone.php?id=$user_id'>Edit Phone</a>";
+}
+
 ?>
 <h3>Your Delivery Address</h3>
 <?php 
-    var_dump($_SESSION['edit_address_source']);
-    $current_street_no = $user_address['street_no'];
-    $current_street_name = $user_address['street_name'];
-    $current_city = $user_address['city'];
-    $current_state = $user_address['state'];
-    $current_postcode = $user_address['postcode'];
 
+if ($user_address != true) {
+    echo "You have not entered a delivery address";
     echo "<form method='post'>";
     echo "<label for='street_no'> Street Number</label>";
-    echo "<input id='street_no' type='number' name='street_no' value='$current_street_no'><br>";
+    echo "<input id='street_no' type='number' name='street_no'><br>";
     echo "<label for='street_name'> Street Name</label>";
-    echo "<input id='street_name' type='text' name='street_name' value='$current_street_name'><br>";
+    echo "<input id='street_name' type='text' name='street_name'><br>";
     echo "<label for='city'> City</label>";
-    echo "<input id='city' type='text' name='city' value='$current_city'><br>";
+    echo "<input id='city' type='text' name='city'><br>";
     echo "<label for='state'> State</label>";
-    echo "<input id='state' type='text' name='state' value='$current_state'><br>";
+    echo "<input id='state' type='text' name='state'><br>";
     echo "<label for='postcode'> Postcode</label>";
-    echo "<input id='postcode' type='number' name='postcode' value='$current_postcode'><br>"; 
-    echo "<a href='profile.php?id=$user_id'>Cancel</a>";
-  echo "<input type='submit' id='update_address' name='update_address' value='Update Address' class='button'>";
+    echo "<input id='postcode' type='number' name='postcode'><br>"; 
+  echo "<input type='submit' id='enter_address' name='enter_address' value='Add Address' class='button'>";
   echo "</form>";
+} else {
+   echo $user_address['street_no'] . " " . $user_address['street_name'] . "<br>";
+   echo $user_address['city'] . "<br>";
+   echo $user_address['state'] . "<br>";
+   echo $user_address['postcode'] . "<br>";
+   $_SESSION['edit_address_source'] = "profile.php";
+   echo "<a href='editaddress.php?id=$user_id'>Edit Address</a>";
+}
 
-   echo $error_message;
 ?>
 
 <h3>Your Orders</h3>

@@ -22,7 +22,7 @@ include('inc/functions.php');
         $user_address = get_user_address($user_id);
         
         if ($is_admin == 1) {
-            header("Location: dashboard.php?id=$user_id"); 
+            header("Location: dashboard.php"); 
         }
 
         // If the user_id in the URL and the session id do not match, log the user out (to prevent people accessing other peoples profiles)
@@ -54,6 +54,17 @@ if(isset($_POST['enter_address'])){
 
 }
 
+if(isset($_POST['phone_no_button'])){
+    $leading_zero = 0;
+    $phone_no_input = filter_input(INPUT_POST, 'phone_no', FILTER_SANITIZE_NUMBER_INT);
+    $phone_no = $leading_zero . $phone_no_input;
+    if (update_user_phone_no($phone_no,$user_id)){
+        header("Location: profile.php?id=$user_id");
+    } else {
+        $error_message = "Sorry, we could not update your phone number";
+    }
+}
+
 // Pressing the logout button runs the logout function
 if (isset($_POST['logout'])) {
     logout();
@@ -76,9 +87,21 @@ if (isset($_POST['logout'])) {
 <?php 
 echo "Hi, " . $show_user_details['name'];
 echo "<br>";
-?>
-<?php echo "Registered email address: " . $show_user_details['email'];
+echo "Registered email address: " . $show_user_details['email'];
 echo "<br>";
+echo "<a href='resetpassword.php?id=$user_id'>Reset Password</a>";
+if ($show_user_details['phone_no'] == 0) {
+  echo "<form method='post'>";
+  echo "<label for='phone_no'>Phone No</label>";
+  echo "<input id='phone_no' type='tel' name='phone_no'><br>"; 
+  echo "<input type='submit' id='phone_no_button' name='phone_no_button' value='Add Phone Number' class='button'>";
+  echo "</form>";
+} else {
+  $_SESSION['edit_phone_source'] = "profile.php";
+  echo "Phone: " . "0" . $show_user_details['phone_no'] . "</br>";
+  echo "<a href='editphone.php?id=$user_id'>Edit Phone</a>";
+}
+
 ?>
 <h3>Your Delivery Address</h3>
 <?php 
@@ -103,7 +126,7 @@ if ($user_address != true) {
    echo $user_address['city'] . "<br>";
    echo $user_address['state'] . "<br>";
    echo $user_address['postcode'] . "<br>";
-
+   $_SESSION['edit_address_source'] = "profile.php";
    echo "<a href='editaddress.php?id=$user_id'>Edit Address</a>";
 }
 

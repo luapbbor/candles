@@ -20,7 +20,8 @@ if (isset($_POST['create_user'])) {
        $error_message = "This email already exists";
   } else {
       // Else call the function to create a new user
-      if(add_new_user($name,$email,$password)){
+      $date_registered = format_current_date();
+      if(add_new_user($name,$email,$password,$date_registered)){
          header("Location: logon.php?new_user=true");  
       } else {
           $error_message = "Sorry, there was an error creating the user";           
